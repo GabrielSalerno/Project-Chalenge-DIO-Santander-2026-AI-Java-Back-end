@@ -99,6 +99,6 @@ You can use the request below in your HTTP client to test the delete method:
 `DELETE http://localhost:8080/transactions/TRANSACTION_ID`
 
 ## Next steps (Roadmap)
-- [ ] Create a GET endpoint to retrieve all transactions.
+- [ ] Create a safe "get all" endpoint that returns the latest 10 transactions by default (protects database performance and AI token limits when users request their entire history).
 - [ ] Create a GET endpoint to fetch monthly reports and totals.
 - [ ] Implement AI-driven transaction categorization using Spring AI.
