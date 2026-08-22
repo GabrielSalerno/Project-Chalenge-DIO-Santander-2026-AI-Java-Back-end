@@ -100,11 +100,17 @@ While working on this project challenge, I expanded its core functionalities by 
 - Implemented a smart database query to fetch strictly the 10 most recent transactions.
 - Protected the API and AI token limits by preventing full database scans.
 
+**3. Get Total Amount**
+- Added a `GET /transactions/total` endpoint to retrieve the sum of all expenses.
+- Implemented a custom JPQL `@Query` with the `SUM()` function in the repository, ensuring the math is calculated efficiently at the database level.
+- Handled empty database scenarios by treating potential `null` results.
+
 ## How to test the new implementations
 You can use the requests below in your HTTP client to test the new methods:
 `DELETE http://localhost:8080/transactions/TRANSACTION_ID` - Delete method
-`GET http://localhost:8080/transactions` - Get latest 10 transactions method 
+`GET http://localhost:8080/transactions` - Get latest 10 transactions method
+`GET http://localhost:8080/transactions/total` - Get total amount method
 
 ## Next steps (Roadmap)
-- [ ] Create a GET endpoint to fetch monthly reports and totals.
+- [ ] Create a GET endpoint to fetch monthly reports.
 - [ ] Implement AI-driven transaction categorization using Spring AI.
