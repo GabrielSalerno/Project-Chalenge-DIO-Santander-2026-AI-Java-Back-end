@@ -120,4 +120,8 @@ You can use the requests below in your HTTP client to test the new methods:
 - `GET http://localhost:8080/transactions/monthly?month=7&year=2026` - Get transactions for a specific month and year
 
 ## Next steps (Roadmap)
+- [x] Add a timestamp/date field to the Transaction domain model to support chronological queries and richer financial data.
+- [x] Create a safe "get all" endpoint that returns the latest 10 transactions by default (protects database performance and AI token limits when users request their entire history).
+- [x] Create a GET endpoint to return total amount.
+- [x] Create a GET endpoint to fetch monthly reports.
 - [ ] Implement AI-driven transaction categorization using Spring AI.
