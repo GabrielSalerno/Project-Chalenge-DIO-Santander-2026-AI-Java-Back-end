@@ -94,12 +94,17 @@ While working on this project challenge, I expanded its core functionalities by 
 - Implemented a Spring `Converter` to elegantly inject `TransactionId` directly into the Controller, keeping the code clean.
 - Added exception handling (returns a clean response when a transaction is not found).
 
+**2. Get Latest Transactions**
+- Added a `GET /transactions` endpoint to act as a user financial statement.
+- Added a `createdOn` (timestamp) field to the domain to support chronological operations.
+- Implemented a smart database query to fetch strictly the 10 most recent transactions.
+- Protected the API and AI token limits by preventing full database scans.
+
 ## How to test the new implementations
-You can use the request below in your HTTP client to test the delete method:
-`DELETE http://localhost:8080/transactions/TRANSACTION_ID`
+You can use the requests below in your HTTP client to test the new methods:
+`DELETE http://localhost:8080/transactions/TRANSACTION_ID` - Delete method
+`GET http://localhost:8080/transactions` - Get latest 10 transactions method 
 
 ## Next steps (Roadmap)
-- [ ] Add a timestamp/date field to the Transaction domain model to support chronological queries and richer financial data.
-- [ ] Create a safe "get all" endpoint that returns the latest 10 transactions by default (protects database performance and AI token limits when users request their entire history).
 - [ ] Create a GET endpoint to fetch monthly reports and totals.
 - [ ] Implement AI-driven transaction categorization using Spring AI.
