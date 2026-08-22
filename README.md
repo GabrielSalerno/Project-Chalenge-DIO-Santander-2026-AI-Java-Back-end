@@ -95,7 +95,7 @@ While working on this project challenge, I expanded its core functionalities by 
 - Added exception handling (returns a clean response when a transaction is not found).
 
 **2. Get Latest Transactions**
-- Added a `GET /transactions` endpoint to act as a user financial statement.
+- Added a `GET /transactions` endpoint to retrieve a quick overview of the user's latest 10 transactions.
 - Added a `createdOn` (timestamp) field to the domain to support chronological operations.
 - Implemented a smart database query to fetch strictly the 10 most recent transactions.
 - Protected the API and AI token limits by preventing full database scans.
@@ -105,12 +105,19 @@ While working on this project challenge, I expanded its core functionalities by 
 - Implemented a custom JPQL `@Query` with the `SUM()` function in the repository, ensuring the math is calculated efficiently at the database level.
 - Handled empty database scenarios by treating potential `null` results.
 
+**4. Get Monthly Transactions**
+- Added a `GET /transactions/monthly` endpoint to retrieve transactions for a specific month.
+- Implemented optional `@RequestParam` parameters, allowing the system to smartly fallback to the current month/year if the inputs are `null`.
+- Used Java's `YearMonth` to dynamically calculate the exact start and end `Instant` of a given month, ensuring accurate database queries regardless of month lengths or leap years.
+
 ## How to test the new implementations
 You can use the requests below in your HTTP client to test the new methods:
-`DELETE http://localhost:8080/transactions/TRANSACTION_ID` - Delete method
-`GET http://localhost:8080/transactions` - Get latest 10 transactions method
-`GET http://localhost:8080/transactions/total` - Get total amount method
+- `DELETE http://localhost:8080/transactions/TRANSACTION_ID` - Delete method
+- `GET http://localhost:8080/transactions` - Get latest 10 transactions method
+- `GET http://localhost:8080/transactions/total` - Get total amount method
+- `GET http://localhost:8080/transactions/monthly` - Get current month transactions (auto-fallback)
+- `GET http://localhost:8080/transactions/monthly?month=8` - Get August transactions for the current year
+- `GET http://localhost:8080/transactions/monthly?month=7&year=2026` - Get transactions for a specific month and year
 
 ## Next steps (Roadmap)
-- [ ] Create a GET endpoint to fetch monthly reports.
 - [ ] Implement AI-driven transaction categorization using Spring AI.
