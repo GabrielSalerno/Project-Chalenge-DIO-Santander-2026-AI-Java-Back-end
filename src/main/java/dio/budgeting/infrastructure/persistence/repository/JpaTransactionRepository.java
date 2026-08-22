@@ -7,6 +7,7 @@ import dio.budgeting.domain.TransactionRepository;
 import dio.budgeting.infrastructure.persistence.entity.TransactionEntity;
 import org.springframework.stereotype.Repository;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -58,5 +59,13 @@ public class JpaTransactionRepository implements TransactionRepository {
     @Override
     public Long totalSum() {
         return transactionEntityRepository.totalSum();
+    }
+
+    @Override
+    public List<Transaction> findMonthTransactions(Instant createdOnAfter, Instant createdOnBefore) {
+        return transactionEntityRepository.findByCreatedOnBetween(createdOnAfter, createdOnBefore)
+                .stream()
+                .map(TransactionEntity::toDomain)
+                .toList();
     }
 }

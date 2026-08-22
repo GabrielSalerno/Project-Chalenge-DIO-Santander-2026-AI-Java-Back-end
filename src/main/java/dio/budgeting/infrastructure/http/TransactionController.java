@@ -29,6 +29,7 @@ public class TransactionController {
     private final DeleteTransactionUseCase deleteTransactionUseCase;
     private final ListLatestTransactionsUseCase listLatestTransactionsUseCase;
     private final TotalSumUseCase totalSumUseCase;
+    private final ListMonthTransactionsUseCase listMonthTransactionsUseCase;
 
     private final TranscriptionModel transcriptionModel;
     private final ChatClient chatClient;
@@ -39,6 +40,7 @@ public class TransactionController {
                                  DeleteTransactionUseCase deleteTransactionUseCase,
                                  ListLatestTransactionsUseCase listLatestTransactionsUseCase,
                                  TotalSumUseCase totalSumUseCase,
+                                 ListMonthTransactionsUseCase listMonthTransactionsUseCase,
                                  TranscriptionModel transcriptionModel,
                                  @Value("classpath:prompts/system-message.st") Resource systemPrompt,
                                  ChatClient.Builder chatClientBuilder,
@@ -48,11 +50,13 @@ public class TransactionController {
         this.deleteTransactionUseCase = deleteTransactionUseCase;
         this.listLatestTransactionsUseCase = listLatestTransactionsUseCase;
         this.totalSumUseCase = totalSumUseCase;
+        this.listMonthTransactionsUseCase = listMonthTransactionsUseCase;
         this.transcriptionModel = transcriptionModel;
         this.chatClient = chatClientBuilder
                 .defaultSystem(systemPrompt.getContentAsString(Charset.defaultCharset()))
                 .defaultTools(persistTransactionUseCase, listTransactionsByCategoryUseCase,
-                        deleteTransactionUseCase,listLatestTransactionsUseCase,totalSumUseCase)
+                        deleteTransactionUseCase, listLatestTransactionsUseCase,
+                        totalSumUseCase, listMonthTransactionsUseCase)
                 .build();
         this.textToSpeechModel = textToSpeechModel;
     }
@@ -84,6 +88,12 @@ public class TransactionController {
     public TotalSumResponse totalSum(){
         var output = totalSumUseCase.execute();
         return TotalSumResponse.from(output);
+    }
+
+    @GetMapping("/monthly")
+    public  List<TransactionResponse> listMonthTransactions(@RequestParam(required = false) Integer month,
+                                                     @RequestParam(required = false) Integer year){
+        return listMonthTransactionsUseCase.execute(month, year).stream().map(TransactionResponse::from).toList();
     }
 
     @PostMapping(value = "/ai", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = "audio/mp3")
