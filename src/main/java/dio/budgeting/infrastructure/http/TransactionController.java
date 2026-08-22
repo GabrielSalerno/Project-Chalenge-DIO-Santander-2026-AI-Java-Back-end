@@ -1,6 +1,7 @@
 package dio.budgeting.infrastructure.http;
 
 import dio.budgeting.application.DeleteTransactionUseCase;
+import dio.budgeting.application.ListLatestTransactionsUseCase;
 import dio.budgeting.application.ListTransactionsByCategoryUseCase;
 import dio.budgeting.application.PersistTransactionUseCase;
 import dio.budgeting.domain.Category;
@@ -28,6 +29,7 @@ public class TransactionController {
     private final PersistTransactionUseCase persistTransactionUseCase;
     private final ListTransactionsByCategoryUseCase listTransactionsByCategoryUseCase;
     private final DeleteTransactionUseCase deleteTransactionUseCase;
+    private final ListLatestTransactionsUseCase listLatestTransactionsUseCase;
 
     private final TranscriptionModel transcriptionModel;
     private final ChatClient chatClient;
@@ -36,6 +38,7 @@ public class TransactionController {
     public TransactionController(PersistTransactionUseCase persistTransactionUseCase,
                                  ListTransactionsByCategoryUseCase listTransactionsByCategoryUseCase,
                                  DeleteTransactionUseCase deleteTransactionUseCase,
+                                 ListLatestTransactionsUseCase listLatestTransactionsUseCase,
                                  TranscriptionModel transcriptionModel,
                                  @Value("classpath:prompts/system-message.st") Resource systemPrompt,
                                  ChatClient.Builder chatClientBuilder,
@@ -43,6 +46,7 @@ public class TransactionController {
         this.persistTransactionUseCase = persistTransactionUseCase;
         this.listTransactionsByCategoryUseCase = listTransactionsByCategoryUseCase;
         this.deleteTransactionUseCase = deleteTransactionUseCase;
+        this.listLatestTransactionsUseCase = listLatestTransactionsUseCase;
         this.transcriptionModel = transcriptionModel;
         this.chatClient = chatClientBuilder
                 .defaultSystem(systemPrompt.getContentAsString(Charset.defaultCharset()))
@@ -67,6 +71,11 @@ public class TransactionController {
     public DeleteResponse deleteTransaction(@PathVariable TransactionId id){
         var transaction = deleteTransactionUseCase.execute(id);
         return DeleteResponse.from(transaction);
+    }
+
+    @GetMapping
+    public List<TransactionResponse> readLatestTransactions(){
+        return listLatestTransactionsUseCase.execute().stream().map(TransactionResponse::from).toList();
     }
 
     @PostMapping(value = "/ai", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = "audio/mp3")

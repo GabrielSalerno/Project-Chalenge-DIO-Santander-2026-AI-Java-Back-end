@@ -11,4 +11,6 @@ public interface TransactionRepository {
     Optional<Transaction> findById(TransactionId transactionId);
 
     void deleteById(TransactionId transactionId);
+
+    List<Transaction> findLatestTransactions();
 }

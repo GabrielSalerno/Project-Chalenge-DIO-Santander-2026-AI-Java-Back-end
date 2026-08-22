@@ -46,4 +46,12 @@ public class JpaTransactionRepository implements TransactionRepository {
         UUID id = transactionId.uuid();
         transactionEntityRepository.deleteById(id);
     }
+
+    @Override
+    public List<Transaction> findLatestTransactions() {
+        return transactionEntityRepository.findTop10ByOrderByCreatedOnDesc()
+                .stream()
+                .map(TransactionEntity::toDomain)
+                .toList();
+    }
 }
