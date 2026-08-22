@@ -13,4 +13,6 @@ public interface TransactionRepository {
     void deleteById(TransactionId transactionId);
 
     List<Transaction> findLatestTransactions();
+
+    Long totalSum();
 }

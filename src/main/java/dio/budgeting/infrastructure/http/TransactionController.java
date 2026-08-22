@@ -1,13 +1,11 @@
 package dio.budgeting.infrastructure.http;
 
-import dio.budgeting.application.DeleteTransactionUseCase;
-import dio.budgeting.application.ListLatestTransactionsUseCase;
-import dio.budgeting.application.ListTransactionsByCategoryUseCase;
-import dio.budgeting.application.PersistTransactionUseCase;
+import dio.budgeting.application.*;
 import dio.budgeting.domain.Category;
 import dio.budgeting.domain.TransactionId;
 import dio.budgeting.infrastructure.http.request.TransactionRequest;
 import dio.budgeting.infrastructure.http.response.DeleteResponse;
+import dio.budgeting.infrastructure.http.response.TotalSumResponse;
 import dio.budgeting.infrastructure.http.response.TransactionResponse;
 import org.springframework.ai.audio.transcription.TranscriptionModel;
 import org.springframework.ai.audio.tts.TextToSpeechModel;
@@ -30,6 +28,7 @@ public class TransactionController {
     private final ListTransactionsByCategoryUseCase listTransactionsByCategoryUseCase;
     private final DeleteTransactionUseCase deleteTransactionUseCase;
     private final ListLatestTransactionsUseCase listLatestTransactionsUseCase;
+    private final TotalSumUseCase totalSumUseCase;
 
     private final TranscriptionModel transcriptionModel;
     private final ChatClient chatClient;
@@ -39,6 +38,7 @@ public class TransactionController {
                                  ListTransactionsByCategoryUseCase listTransactionsByCategoryUseCase,
                                  DeleteTransactionUseCase deleteTransactionUseCase,
                                  ListLatestTransactionsUseCase listLatestTransactionsUseCase,
+                                 TotalSumUseCase totalSumUseCase,
                                  TranscriptionModel transcriptionModel,
                                  @Value("classpath:prompts/system-message.st") Resource systemPrompt,
                                  ChatClient.Builder chatClientBuilder,
@@ -47,10 +47,12 @@ public class TransactionController {
         this.listTransactionsByCategoryUseCase = listTransactionsByCategoryUseCase;
         this.deleteTransactionUseCase = deleteTransactionUseCase;
         this.listLatestTransactionsUseCase = listLatestTransactionsUseCase;
+        this.totalSumUseCase = totalSumUseCase;
         this.transcriptionModel = transcriptionModel;
         this.chatClient = chatClientBuilder
                 .defaultSystem(systemPrompt.getContentAsString(Charset.defaultCharset()))
-                .defaultTools(persistTransactionUseCase, listTransactionsByCategoryUseCase)
+                .defaultTools(persistTransactionUseCase, listTransactionsByCategoryUseCase,
+                        deleteTransactionUseCase,listLatestTransactionsUseCase,totalSumUseCase)
                 .build();
         this.textToSpeechModel = textToSpeechModel;
     }
@@ -76,6 +78,12 @@ public class TransactionController {
     @GetMapping
     public List<TransactionResponse> readLatestTransactions(){
         return listLatestTransactionsUseCase.execute().stream().map(TransactionResponse::from).toList();
+    }
+
+    @GetMapping("/total")
+    public TotalSumResponse totalSum(){
+        var output = totalSumUseCase.execute();
+        return TotalSumResponse.from(output);
     }
 
     @PostMapping(value = "/ai", consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces = "audio/mp3")
