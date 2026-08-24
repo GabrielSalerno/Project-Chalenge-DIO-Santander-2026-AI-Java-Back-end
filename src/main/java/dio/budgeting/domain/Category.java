@@ -1,7 +1,9 @@
 package dio.budgeting.domain;
 
 public enum Category {
-    GROCERIES,
-    PHARMA,
-    AUTO,
+    FOOD,
+    TRANSPORT,
+    HEALTH,
+    ENTERTAINMENT,
+    OTHERS
 }
