@@ -124,4 +124,4 @@ You can use the requests below in your HTTP client to test the new methods:
 - [x] Create a safe "get all" endpoint that returns the latest 10 transactions by default (protects database performance and AI token limits when users request their entire history).
 - [x] Create a GET endpoint to return total amount.
 - [x] Create a GET endpoint to fetch monthly reports.
-- [ ] Implement AI-driven transaction categorization using Spring AI.
+- [x] Expand the Category domain model to support broader financial contexts
